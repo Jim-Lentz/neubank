@@ -6,9 +6,9 @@
     }
   }
     backend "azurerm" {
-      resource_group_name  = "tfstate"
-      storage_account_name = "tfstateyyrxc"
-      container_name       = "tfstate"
+      resource_group_name  = "tfstate-dev"
+      storage_account_name = "tfstatef7op9"
+      container_name       = "tfstate-dev"
       key                  = "terraform.tfstate"
   }
 
@@ -28,4 +28,8 @@ resource "azurerm_resource_group" "rg" {
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
+}
+
+module "my_module" {
+  source = "./network"
 }
