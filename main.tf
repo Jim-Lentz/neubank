@@ -30,6 +30,15 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-module "my_module" {
+module "" {
   source = "./modules/network"
+}
+
+module "frontend" {
+  source              = "./modules/frontend"
+  name                = "frontend-app"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  app_service_plan_id = azurerm_app_service_plan.asp.id # Define this resource or pass the ID if existing
+  subnet_id           = module.network.frontend_subnet_id # Ensure you have a network module or reference the subnet directly
 }
