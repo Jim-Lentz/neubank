@@ -30,7 +30,7 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-module "" {
+module "network" {
   source = "./modules/network"
 }
 
