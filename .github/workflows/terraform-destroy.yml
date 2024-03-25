@@ -32,8 +32,8 @@ jobs:
         echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
         echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
 
-    # - name: 'Terraform Init'
-    #   run: terraform init
+    - name: 'Terraform Init'
+      run: terraform init
 
     # - name: 'Terraform Plan'
     #   run: terraform plan
