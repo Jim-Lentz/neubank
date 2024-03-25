@@ -8,36 +8,44 @@ on:
         default: 'dev'
 
 jobs:
-  destroy:
-    name: "Destroy Azure"
+  terraform:
+    name: 'Deploy Terraform to Azure'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
-#        - name: AWS Plan Copy
-#          run: aws s3 cp s3://your-bucket/yourapp-${{ github.event.inputs.env }}.tfstate terraform.tfstate
-#          id: copy
-#          env:
-#            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#            AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+    - uses: actions/checkout@v3
+    
+    - name: 'Set up Azure credentials'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-#        - name: Show Destroy plan
-#          run: terraform plan -destroy
-#          continue-on-error: true
-         - name: 'Set up Azure credentials'
-           run: |
-             echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
-             echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
-             echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
-             echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-             
-         - name: Destroy resources jobs
-           id: destroy
-           run: terraform destroy -auto-approve
+    - name: 'Setup Terraform'
+      uses: hashicorp/setup-terraform@v1
 
- #       - name: Delete plan file
- #         if: steps.destroy.outcome == 'success'
- #         run: aws s3 rm s3://your-bucket/yourapp-${{ github.event.inputs.env }}.tfstate
- #         env:
- #           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
- #           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
- #           AWS_DEFAULT_REGION: ${{ secrets.REGION }}
+    - name: 'Set up Azure credentials'
+      run: |
+        echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+        echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+        echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+
+    # - name: 'Terraform Init'
+    #   run: terraform init
+
+    # - name: 'Terraform Plan'
+    #   run: terraform plan
+
+    # - name: 'Terraform Apply'
+    #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    #   run: terraform apply -auto-approve
+
+    - name: 'Terraform Destroy'
+      run: terraform destroy -auto-approve
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
