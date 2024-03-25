@@ -99,3 +99,7 @@ resource "azurerm_subnet_network_security_group_association" "database_nsg_assoc
   subnet_id                 = azurerm_subnet.subnet["database"].id
   network_security_group_id = azurerm_network_security_group.database_nsg.id
 }
+
+output "frontend_subnet_id" {
+  value = azurerm_subnet.subnet["frontend"].id
+}
