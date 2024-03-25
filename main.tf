@@ -31,5 +31,5 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "my_module" {
-  source = "./network"
+  source = "./modules/network"
 }
