@@ -44,6 +44,7 @@ module "networking" {
   location            = var.location
   app_service_plan_id = "placeholder" #azurerm_app_service_plan.asp.id # Define this resource or pass the ID if existing
   subnet_id           = module.networking.frontend_subnet_id #module.my_module.azurerm_subnet.subnet["frontend"].id # module.network.frontend_subnet_id # Ensure you have a network module or reference the subnet directly
+  environment         = var.environment
   depends_on = [
     azurerm_resource_group.rg
   ]
