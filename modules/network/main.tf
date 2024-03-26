@@ -3,6 +3,12 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = [var.vnet_address_space]
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.location
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -18,6 +24,12 @@ resource "azurerm_network_security_group" "frontend_nsg" {
   name                = "frontend-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.location
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 resource "azurerm_network_security_rule" "frontend_rule" {
@@ -39,6 +51,12 @@ resource "azurerm_network_security_group" "backend_nsg" {
   name                = "backend-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.location
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 resource "azurerm_network_security_rule" "backend_rule" {
@@ -60,6 +78,12 @@ resource "azurerm_network_security_group" "database_nsg" {
   name                = "database-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.location
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 resource "azurerm_network_security_rule" "database_rule" {

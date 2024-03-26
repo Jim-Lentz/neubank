@@ -19,9 +19,9 @@ resource "random_string" "resource_code" {
 
 resource "azurerm_resource_group" "tfstate" {
   name     = "tfstate-dev"
-  location = "East US"
+  location = var.location
   tags = {
-    Environment = "Dev"
+    Environment = var.environment
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
@@ -36,7 +36,7 @@ resource "azurerm_storage_account" "tfstate" {
   allow_nested_items_to_be_public = false
 
   tags = {
-    Environment = "Dev"
+    Environment = var.location
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
