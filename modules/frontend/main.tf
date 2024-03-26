@@ -6,7 +6,7 @@ resource "azurerm_service_plan" "frontend_service_plan" {
   sku_name            = "B2"
 
   tags = {
-    Environment = "Dev"
+    Environment = var.environment
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
@@ -27,7 +27,7 @@ resource "azurerm_linux_web_app" "frontend" {
   site_config {}
 
   tags = {
-    Environment = "Dev"
+    Environment = var.environment
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
