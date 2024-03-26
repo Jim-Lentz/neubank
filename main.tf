@@ -37,7 +37,7 @@ module "networking" {
   ]
 }
 
- module "frontend" {
+/* module "frontend" {
   source              = "./modules/frontend"
   name                = "frontend-app"
   resource_group_name = "dev-rgp-cis-neubank-use-001" #var.resource_group_name
@@ -47,4 +47,4 @@ module "networking" {
   depends_on = [
     azurerm_resource_group.rg
   ]
-} 
+} */
