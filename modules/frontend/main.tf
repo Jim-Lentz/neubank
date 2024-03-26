@@ -1,13 +1,10 @@
-resource "azurerm_app_service_plan" "frontend_service_plan" {
+resource "azurerm_service_plan" "frontend_service_plan" {
   name                = "webapp_service_plan"
   location            = var.location
   resource_group_name = var.resource_group_name
-  kind                = "Linux"
+  os_type             = "Linux"
+  sku_name            = "B2"
 
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
   tags = {
     Environment = "Dev"
     Owner = "first.last@company.com"
@@ -15,15 +12,20 @@ resource "azurerm_app_service_plan" "frontend_service_plan" {
   }
 }
 
-resource "azurerm_app_service" "frontend" {
-  name                = webapp_service
+resource "random_string" "resource_code" {
+  length  = 5
+  special = false
+  upper   = false
+}
+
+resource "azurerm_linux_web_app" "frontend" {
+  name                = "webapp-service-${random_string.resource_code.result}"
   location            = var.location
   resource_group_name = var.resource_group_name
-  app_service_plan_id = var.app_service_plan_id
+  service_plan_id = azurerm_service_plan.frontend_service_plan.id #var.app_service_plan_id
 
-  site_config {
-    dotnet_framework_version = "v4.0" # Example, adjust according to your application
-  }
+  site_config {}
+
   tags = {
     Environment = "Dev"
     Owner = "first.last@company.com"

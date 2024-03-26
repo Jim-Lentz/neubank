@@ -30,15 +30,21 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-module "network" {
+module "networking" {
   source = "./modules/network"
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
 }
 
-/* module "frontend" {
+ module "frontend" {
   source              = "./modules/frontend"
   name                = "frontend-app"
   resource_group_name = var.resource_group_name
   location            = var.location
-  app_service_plan_id = azurerm_app_service_plan.asp.id # Define this resource or pass the ID if existing
-  subnet_id           = module.network.frontend_subnet_id # Ensure you have a network module or reference the subnet directly
-} */
+  app_service_plan_id = "placeholder" #azurerm_app_service_plan.asp.id # Define this resource or pass the ID if existing
+  subnet_id           = module.networking.frontend_subnet_id #module.my_module.azurerm_subnet.subnet["frontend"].id # module.network.frontend_subnet_id # Ensure you have a network module or reference the subnet directly
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
+} 
