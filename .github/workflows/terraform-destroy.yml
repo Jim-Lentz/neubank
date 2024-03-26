@@ -43,7 +43,7 @@ jobs:
     #   run: terraform apply -auto-approve
 
     - name: 'Terraform Destroy'
-      run: terraform destroy -var 'location=eastus' -var 'resource_group_name=dev-rgp-cis-neubank-use-001' -auto-approve
+      run: terraform destroy -auto-approve
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
