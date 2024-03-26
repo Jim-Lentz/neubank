@@ -7,3 +7,8 @@ variable "location" {
   description = "The Azure location"
   type        = string
 }
+
+variable "environment" {
+  description = "Dev, Stage, or Prod"
+  type        = string
+}
