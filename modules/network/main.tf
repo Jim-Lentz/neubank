@@ -118,3 +118,11 @@ resource "azurerm_subnet_network_security_group_association" "database_nsg_assoc
 output "frontend_subnet_id" {
   value = azurerm_subnet.subnet["frontend"].id
 }
+
+output "backend_subnet_id" {
+  value = azurerm_subnet.subnet["backend"].id
+}
+
+output "database_subnet_id" {
+  value = azurerm_subnet.subnet["database"].id
+}
