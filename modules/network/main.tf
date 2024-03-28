@@ -24,6 +24,10 @@ resource "azurerm_subnet" "subnet" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
+
+  # Apply service endpoints conditionally
+  service_endpoints    = each.key == "database" ? ["Microsoft.Sql"] : []
+  
 }
 
 # Frontend NSG and Rule

@@ -22,7 +22,7 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
 }
 
 resource "azurerm_storage_account" "sql_storage" {
-  name                     = "sql_storage"
+  name                     = "sqlstorage11jdk4k5kri9"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
@@ -52,10 +52,6 @@ resource "azurerm_sql_database" "sqldb" {
 
 output "database_server_name" {
   value = azurerm_sql_server.sqlserver.name
-}
-
-output "sqlserver_ip" {
-  value = azurerm_sql_virtual_network_rule.sqlserver_ip
 }
 
 output "sql_server_fqdn" {

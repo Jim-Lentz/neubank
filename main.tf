@@ -34,6 +34,19 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
+resource "azurerm_application_insights" "app_insights" {
+  name                = "example-appinsights"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  application_type    = "web"
+
+  tags = {
+    Environment = var.environment
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
+}
+
 module "networking" {
   source = "./modules/network"
   depends_on = [
@@ -67,14 +80,17 @@ module "networking" {
   ]
 } 
 
+# Disabled this takes 20 minutes to come up. 
+/*
  module "redis" {
    source = "./modules/redis"
    resource_group_name = azurerm_resource_group.rg.name 
    location            = var.location
    subnet_id           = module.networking.backend_subnet_id 
  }
+*/
 
-/*
+
 module "database" {
   source              = "./modules/database"
   name                = "sql-server"
@@ -86,7 +102,14 @@ module "database" {
     azurerm_resource_group.rg
   ]
 } 
-*/
+
+module "objectstorage" {
+  source = "./modules/objectstorage"
+  resource_group_name = azurerm_resource_group.rg.name 
+  location            = var.location
+  environment         = var.environment
+}
+
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
 }

@@ -9,6 +9,12 @@ resource "azurerm_redis_cache" "cache" {
   # requires premium SKU subnet_id = var.subnet_id
 
   redis_configuration {}
+
+  tags = {
+    Environment = var.environment
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 output "redis_cache_hostname" {

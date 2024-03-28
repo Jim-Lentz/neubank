@@ -8,11 +8,6 @@ variable "location" {
   type        = string
 }
 
-variable "subnet_id" {
-  description = "The subnet ID for the frontend"
-  type        = string
-}
-
 variable "environment" {
   description = "Dev, Test, Prod"
   type        = string
