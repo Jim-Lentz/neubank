@@ -54,7 +54,7 @@ module "networking" {
   ]
 } 
 
-/* module "backend" {
+ module "backend" {
   source              = "./modules/appserver"
   name                = "backend-app-jklsrn84n3"
   resource_group_name = azurerm_resource_group.rg.name 
@@ -67,6 +67,14 @@ module "networking" {
   ]
 } 
 
+ module "redis" {
+   source = "./modules/redis"
+   resource_group_name = azurerm_resource_group.rg.name 
+   location            = var.location
+   subnet_id           = module.networking.backend_subnet_id 
+ }
+
+/*
 module "database" {
   source              = "./modules/database"
   name                = "sql-server"

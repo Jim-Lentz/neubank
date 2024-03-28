@@ -23,7 +23,8 @@ resource "azurerm_linux_web_app" "frontend" {
   location            = var.location
   resource_group_name = var.resource_group_name
   service_plan_id = azurerm_service_plan.frontend_service_plan.id 
-  virtual_network_subnet_id = var.subnet_id #azurerm_subnet.subnet["frontend"].id
+  virtual_network_subnet_id = var.subnet_id 
+  public_network_access_enabled = true
 
   site_config {
     minimum_tls_version = "1.2"
@@ -44,3 +45,7 @@ resource "azurerm_app_service_source_control" "sourcecontrol" {
   use_manual_integration = true
   use_mercurial      = false
 } 
+
+output "frontend_url" {
+  value = azurerm_app_service.frontend.default_site_hostname
+}

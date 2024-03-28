@@ -24,6 +24,7 @@ resource "azurerm_linux_web_app" "backend" {
   resource_group_name = var.resource_group_name
   service_plan_id = azurerm_service_plan.backend_service_plan.id 
   virtual_network_subnet_id = var.subnet_id 
+  public_network_access_enabled = false
 
   site_config {}
 
@@ -32,4 +33,8 @@ resource "azurerm_linux_web_app" "backend" {
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
+}
+
+output "backend_url" {
+  value = azurerm_app_service.backend.default_site_hostname
 }

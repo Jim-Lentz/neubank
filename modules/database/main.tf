@@ -57,3 +57,7 @@ output "database_server_name" {
 output "sqlserver_ip" {
   value = azurerm_sql_virtual_network_rule.sqlserver_ip
 }
+
+output "sql_server_fqdn" {
+  value = azurerm_sql_server.sqlserver.fully_qualified_domain_name
+}
