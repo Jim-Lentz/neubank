@@ -46,6 +46,3 @@ resource "azurerm_app_service_source_control" "sourcecontrol" {
   use_mercurial      = false
 } 
 
-output "frontend_url" {
-  value = azurerm_linux_web_app.frontend.default_site_hostname
-}
