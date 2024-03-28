@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "frontend_service_plan" {
     Project = "Mortgage Calculator"
   }
 }
-/*
+
 resource "azurerm_linux_web_app" "frontend" {
   name                = "webapp-service-${random_string.resource_code.result}"
   location            = var.location
@@ -43,4 +43,4 @@ resource "azurerm_app_service_source_control" "sourcecontrol" {
   branch             = "master"
   use_manual_integration = true
   use_mercurial      = false
-} */
+} 
