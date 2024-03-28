@@ -36,5 +36,5 @@ resource "azurerm_linux_web_app" "backend" {
 }
 
 output "backend_url" {
-  value = azurerm_app_service.backend.default_site_hostname
+  value = azurerm_linux_web_app.backend.default_site_hostname
 }

@@ -47,5 +47,5 @@ resource "azurerm_app_service_source_control" "sourcecontrol" {
 } 
 
 output "frontend_url" {
-  value = azurerm_app_service.frontend.default_site_hostname
+  value = azurerm_linux_web_app.frontend.default_site_hostname
 }
