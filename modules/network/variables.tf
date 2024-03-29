@@ -33,3 +33,7 @@ variable "backend_port" {
   description = "The network port for backend access."
   default     = "8080"
 }
+
+variable "environment" {
+  description = "Dev, Test, Prod"
+}

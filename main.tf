@@ -34,8 +34,39 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
+data "azurerm_client_config" "current" {}
+
+
+
+resource "azurerm_key_vault" "fg-keyvault" {
+  name                        = "fgkeyvault2024"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+  sku_name                    = "standard"
+
+
+}
+
+resource "azurerm_key_vault_access_policy" "kv_access_policy_01" {
+  #This policy adds databaseadmin group with below permissions
+  key_vault_id       = azurerm_key_vault.fg-keyvault.id
+  tenant_id          = data.azurerm_client_config.current.tenant_id
+  object_id          = data.azurerm_client_config.current.object_id
+  key_permissions    = ["Get", "List"]
+  secret_permissions = ["Get", "Backup", "Delete", "List", "Purge", "Recover", "Restore", "Set"]
+
+  depends_on = [azurerm_key_vault.fg-keyvault]
+}
+
+
+
+# for telemetry data from the applications
 resource "azurerm_application_insights" "app_insights" {
-  name                = "example-appinsights"
+  name                = "Calculator-appinsights"
   location            = var.location
   resource_group_name = var.resource_group_name
   application_type    = "web"
@@ -45,13 +76,23 @@ resource "azurerm_application_insights" "app_insights" {
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 module "networking" {
-  source = "./modules/network"
-  depends_on = [
+  source         = "./modules/network"
+  environment    = var.environment
+  depends_on     = [
     azurerm_resource_group.rg
   ]
+}
+
+module "appserviceplan" {
+  source              = "./modules/appserviceplan"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  environment         = var.environment
+  depends_on = [ module.networking ]
 }
 
  module "frontend" {
@@ -59,14 +100,17 @@ module "networking" {
   name                = "frontend-app-jklsrn84n3"
   resource_group_name = azurerm_resource_group.rg.name 
   location            = var.location
-  app_service_plan_id = "placeholder" 
-  subnet_id           = module.networking.frontend_subnet_id 
+  app_service_plan_id = module.appserviceplan.front-end-asp
+  back-end-app_service_plan_id = module.appserviceplan.back-end-asp
+  front-end-subnet_id = module.networking.front-end-subnet 
+  back-end-subnet_id  = module.networking.back-end-subnet
+  insights-instrumentation_key = azurerm_application_insights.app_insights.instrumentation_key
   environment         = var.environment
   depends_on = [
     azurerm_resource_group.rg
   ]
 } 
-
+/*
  module "backend" {
   source              = "./modules/appserver"
   name                = "backend-app-jklsrn84n3"
@@ -79,6 +123,7 @@ module "networking" {
     azurerm_resource_group.rg
   ]
 } 
+*/
 
 # Disabled this takes 20 minutes to come up. 
 /*
@@ -90,7 +135,19 @@ module "networking" {
  }
 */
 
+module "database" {
+  source = "./modules/database"
+  resource_group_name = azurerm_resource_group.rg.name 
+  location            = var.location
+  subnet_id           = module.networking.back-end-subnet
+  environment         = var.environment
+  valult-id           = azurerm_key_vault.fg-keyvault.id
+  depends_on = [
+  azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01
+  ]
+}
 
+/*
 module "database" {
   source              = "./modules/database"
   name                = "sql-server"
@@ -102,6 +159,7 @@ module "database" {
     azurerm_resource_group.rg
   ]
 } 
+*/
 
 module "objectstorage" {
   source = "./modules/objectstorage"
@@ -113,3 +171,14 @@ module "objectstorage" {
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
 }
+
+output "frontend_url" {
+  
+  value = module.frontend.frontend_url
+}
+
+/*
+output "app_insights_instrumentation_key" {
+  value = azurerm_application_insights.app_insights.instrumentation_key
+}
+*/

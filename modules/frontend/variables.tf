@@ -18,7 +18,12 @@ variable "app_service_plan_id" {
   type        = string
 }
 
-variable "subnet_id" {
+variable "front-end-subnet_id" {
+  description = "The subnet ID for the frontend"
+  type        = string
+}
+
+variable "back-end-subnet_id" {
   description = "The subnet ID for the frontend"
   type        = string
 }
@@ -26,4 +31,12 @@ variable "subnet_id" {
 variable "environment" {
   description = "Dev, Test, Prod"
   type        = string
+}
+
+variable "insights-instrumentation_key" {
+  type = string
+}
+
+variable "back-end-app_service_plan_id" {
+  type = string
 }
