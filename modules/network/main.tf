@@ -58,6 +58,12 @@ resource "azurerm_network_security_group" "backend_nsg" {
   name                = "backend-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.environment
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 # Allow SQL traffic from the frontend subnet
@@ -110,6 +116,12 @@ resource "azurerm_network_security_group" "frontend_nsg" {
   name                = "frontend-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    Environment = var.environment
+    Owner = "first.last@company.com"
+    Project = "Mortgage Calculator"
+  }
 }
 
 # Allow SQL traffic from the Internet to port 80
