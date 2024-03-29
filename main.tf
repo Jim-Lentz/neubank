@@ -95,8 +95,8 @@ module "appserviceplan" {
   depends_on = [ module.networking ]
 }
 
- module "frontend" {
-  source              = "./modules/frontend"
+ module "compute" {
+  source              = "./modules/compute"
   name                = "frontend-app-jklsrn84n3"
   resource_group_name = azurerm_resource_group.rg.name 
   location            = var.location
@@ -110,20 +110,6 @@ module "appserviceplan" {
     azurerm_resource_group.rg
   ]
 } 
-/*
- module "backend" {
-  source              = "./modules/appserver"
-  name                = "backend-app-jklsrn84n3"
-  resource_group_name = azurerm_resource_group.rg.name 
-  location            = var.location
-  app_service_plan_id = "placeholder" 
-  subnet_id           = module.networking.backend_subnet_id 
-  environment         = var.environment
-  depends_on = [
-    azurerm_resource_group.rg
-  ]
-} 
-*/
 
 # Disabled this takes 20 minutes to come up. 
 /*
@@ -131,7 +117,7 @@ module "appserviceplan" {
    source = "./modules/redis"
    resource_group_name = azurerm_resource_group.rg.name 
    location            = var.location
-   subnet_id           = module.networking.backend_subnet_id 
+   subnet_id           = module.networking.back-end-subnet 
  }
 */
 
@@ -147,20 +133,6 @@ module "database" {
   ]
 }
 
-/*
-module "database" {
-  source              = "./modules/database"
-  name                = "sql-server"
-  resource_group_name = azurerm_resource_group.rg.name 
-  location            = var.location
-  subnet_id           = module.networking.database_subnet_id 
-  environment         = var.environment
-  depends_on = [
-    azurerm_resource_group.rg
-  ]
-} 
-*/
-
 module "objectstorage" {
   source = "./modules/objectstorage"
   resource_group_name = azurerm_resource_group.rg.name 
@@ -174,11 +146,5 @@ output "resource_group_name" {
 
 output "frontend_url" {
   
-  value = module.frontend.frontend_url
+  value = module.compute.frontend_url
 }
-
-/*
-output "app_insights_instrumentation_key" {
-  value = azurerm_application_insights.app_insights.instrumentation_key
-}
-*/

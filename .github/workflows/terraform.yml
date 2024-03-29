@@ -36,11 +36,11 @@ jobs:
       run: terraform init
 
     - name: 'Terraform Plan'
-      run: terraform plan -var location="East US" -var resource_group_name="dev-rgp-cis-neubank-use-001" -var environment="Dev"
+      run: terraform plan -var-file="terraform.tfvars" #-var location="East US" -var resource_group_name="dev-rgp-cis-neubank-use-001" -var environment="Dev"
 
     - name: 'Terraform Apply'
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -var location="East US" -var resource_group_name="dev-rgp-cis-neubank-use-001" -var environment="Dev" -auto-approve 
+      run: terraform apply -var-file="terraform.tfvars" #-var location="East US" -var resource_group_name="dev-rgp-cis-neubank-use-001" -var environment="Dev" -auto-approve 
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

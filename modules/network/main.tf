@@ -12,13 +12,6 @@ resource "azurerm_virtual_network" "vnet" {
   }
 }
 
-/*
-#get output variables
-output "resource_group_id" {
-  value = azurerm_resource_group.rg.id
-}
-*/
-
 #Create subnets
 resource "azurerm_subnet" "front-end-subnet" {
   name                 = "font-end-subnet"
