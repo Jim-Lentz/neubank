@@ -1,12 +1,13 @@
 # Neubank Loan Calculator Infrastructure
 Azure 3 tier app project
+This will deploy a frontend web server, a backend API server, Redis Cache (disabled due to creation time), SQL server, and blob storage.
 
 
 # Reference Architecture
 ![image](https://github.com/Jim-Lentz/neubank/assets/52187407/e6b875f7-68fa-43ec-b6aa-9fc74eaa3b78)
 
-# ToDo
-1. Currently will only deploy Dev environment. Structure to repo to support Dev, Test, Prod
+# To Do
+1. Currently will only deploy Dev environment. Structure repo to support Dev, Test, Prod
 2. Add more perimeter protection 
 
 # Azure DevOps Boards
