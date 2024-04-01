@@ -38,6 +38,12 @@ resource "azurerm_storage_account" "fn-storageaccount" {
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
 }
 
 resource "azurerm_linux_function_app" "back-end-fnapp" {
@@ -55,8 +61,6 @@ resource "azurerm_linux_function_app" "back-end-fnapp" {
     "APPINSIGHTS_INSTRUMENTATIONKEY"                  = var.insights-instrumentation_key
     "APPINSIGHTS_PROFILERFEATURE_VERSION"             = "1.0.0"
     "ApplicationInsightsAgent_EXTENSION_VERSION"      = "~2"
-    
-  
   }
 
   site_config {
@@ -78,6 +82,11 @@ resource "azurerm_linux_function_app" "back-end-fnapp" {
  depends_on = [
    azurerm_storage_account.fn-storageaccount
  ]
+ tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
 }
 
 #vnet integration of backend functions

@@ -7,11 +7,16 @@ resource "random_password" "randompassword" {
 
 #Create Key Vault Secret
 resource "azurerm_key_vault_secret" "sqladminpassword" {
-  # checkov:skip=CKV_AZURE_41:Expiration not needed 
   name         = "sqladmin"
   value        = random_password.randompassword.result
   key_vault_id = var.valult-id
   content_type = "text/plain"
+
+  tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
   /*depends_on = [
     azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01,azurerm_key_vault_access_policy.kv_access_policy_02,azurerm_key_vault_access_policy.kv_access_policy_03
   ] */
@@ -19,7 +24,7 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
 
 #Azure sql database
 resource "azurerm_mssql_server" "azuresql" {
-  name                         = "fg-sqldb-dev" # our environment is Dev and no capital letters are allowed ${var.environment}"
+  name                         = "fg-sqldb-${var.environment}" 
   resource_group_name          = var.resource_group_name
   location                     = var.location
   version                      = "12.0"
@@ -30,10 +35,15 @@ resource "azurerm_mssql_server" "azuresql" {
     login_username = "AzureAD Admin"
     object_id      = "86f50fc0-0d0d-4c26-941d-17dd64ed03a6"
   }
+
+  tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
 }
 
 #add subnet from the backend vnet
-#adding a new comment in main branch
 resource "azurerm_mssql_virtual_network_rule" "allow-be" {
   name      = "be-sql-vnet-rule"
   server_id = azurerm_mssql_server.azuresql.id
@@ -63,4 +73,10 @@ resource "azurerm_key_vault_secret" "sqldb_cnxn" {
   name = "fgsqldbconstring"
   value = "Driver={ODBC Driver 18 for SQL Server};Server=tcp:fg-sqldb-prod.database.windows.net,1433;Database=fg-db;Uid=4adminu$er;Pwd=${random_password.randompassword.result};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
   key_vault_id = var.valult-id
+
+  tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
 }

@@ -1,11 +1,11 @@
-
-name: 'Terraform CI/CD'
-
+name: Terraform Destroy
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Environment'
+        required: true
+        default: 'dev'
 
 jobs:
   terraform:
@@ -35,12 +35,8 @@ jobs:
     - name: 'Terraform Init'
       run: terraform init -backend-config=key=prod-terraform.tfstate
 
-    - name: 'Terraform Plan'
-      run: terraform plan -var-file="./prod.tfvars"
-
-    - name: 'Terraform Apply'
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -var-file="./prod.tfvars"
+    - name: 'Terraform Destroy'
+      run: terraform destroy var-file="./prod.tfvars" -auto-approve 
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

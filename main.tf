@@ -5,11 +5,18 @@
       version = "~>3.0"
     }
   }
-    backend "azurerm" {
+/*    backend "azurerm" {
       resource_group_name  = "tfstate-dev"
       storage_account_name = "tfstatef7op9"
       container_name       = "tfstate-dev"
-      key                  = "terraform.tfstate"
+    #  key                  = "terraform.tfstate" # Injected via commandline argument 
+  }
+  */
+  backend "azurerm" {
+      resource_group_name  = "tfstate"
+      storage_account_name = "tfstatenuebankf7op9"
+      container_name       = "tfstate"
+    #  key                  = "terraform.tfstate" # Injected via commandline argument 
   }
 
 }
@@ -24,7 +31,7 @@ provider "azurerm" {
 
 # Create resource group
 resource "azurerm_resource_group" "rg" {
-  name     = "dev-rgp-cis-neubank-use-001"
+  name     = "${var.environment}-rgp-cis-neubank-use-001"
   location = var.location
 
   tags = {
