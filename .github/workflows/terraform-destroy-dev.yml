@@ -36,7 +36,7 @@ jobs:
       run: terraform init -backend-config=key=dev-terraform.tfstate
 
     - name: 'Terraform Destroy'
-      run: terraform destroy var-file="./dev.tfvars" -auto-approve 
+      run: terraform destroy -var-file="./dev.tfvars" -auto-approve 
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

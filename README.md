@@ -11,6 +11,7 @@ This will deploy a frontend web server, a backend API server, Redis Cache (disab
 2. Add more perimeter protection such as a WAF
 3. Add repo security scanning such as chekov or similar scanning tool
 
+# Workflow
 When adding features, create a dev branch. When pushing dev a new environment will build.
 When ready for prod merge dev to prod and Github actions will add the new features.
 
