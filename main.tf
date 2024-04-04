@@ -5,13 +5,7 @@
       version = "~>3.0"
     }
   }
-/*    backend "azurerm" {
-      resource_group_name  = "tfstate-dev"
-      storage_account_name = "tfstatef7op9"
-      container_name       = "tfstate-dev"
-    #  key                  = "terraform.tfstate" # Injected via commandline argument 
-  }
-  */
+
   backend "azurerm" {
       resource_group_name  = "tfstate"
       storage_account_name = "tfstatenuebankf7op9"
@@ -120,7 +114,7 @@ module "appserviceplan" {
   ]
 } 
 
-# Disabled this takes 20 minutes to come up. 
+# Disabled - this takes 20 minutes to come up. 
 /*
  module "redis" {
    source = "./modules/redis"
