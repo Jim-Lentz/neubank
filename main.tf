@@ -40,7 +40,7 @@ data "azurerm_client_config" "current" {}
 
 
 resource "azurerm_key_vault" "fg-keyvault" {
-  name                        = "fgkeyvault2024"
+  name                        = "${var.environment}-fgkeyvault2024"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   enabled_for_disk_encryption = true
@@ -67,7 +67,7 @@ resource "azurerm_key_vault_access_policy" "kv_access_policy_01" {
 
 # for telemetry data from the applications
 resource "azurerm_application_insights" "app_insights" {
-  name                = "Calculator-appinsights"
+  name                = "${var.environment}Calculator-appinsights"
   location            = var.location
   resource_group_name = var.resource_group_name
   application_type    = "web"
@@ -150,4 +150,9 @@ output "resource_group_name" {
 output "frontend_url" {
   
   value = module.compute.frontend_url
+}
+
+output "backend_url" {
+  
+  value = module.compute.backend_url
 }

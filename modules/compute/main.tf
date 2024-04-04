@@ -1,7 +1,7 @@
 #Frontend
 # Create the web app, pass in the App Service Plan ID
 resource "azurerm_linux_web_app" "front-end-webapp" {
-  name                  = "neubank-webapp"
+  name                  = "${var.environment}-neubank-webapp"
   location              = var.location
   resource_group_name   = var.resource_group_name
   service_plan_id       = var.app_service_plan_id
@@ -33,7 +33,7 @@ resource "azurerm_linux_web_app" "front-end-webapp" {
 #Backend
 #storage account for functionapp
 resource "azurerm_storage_account" "fn-storageaccount" {
-  name                     = "fgfunctionappsa2023xyse"
+  name                     = "${var.environment}-fgfunctionappsa2023xyse"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
@@ -47,7 +47,7 @@ resource "azurerm_storage_account" "fn-storageaccount" {
 }
 
 resource "azurerm_linux_function_app" "back-end-fnapp" {
-  name                = "back-end-function-app"
+  name                = "${var.environment}=back-end-function-app"
   resource_group_name = var.resource_group_name
   location            = var.location
 
@@ -111,4 +111,9 @@ resource "azurerm_app_service_virtual_network_swift_connection" "fe-vnet-integra
 output "frontend_url" {
   
   value = "${azurerm_linux_web_app.front-end-webapp.name}.azurewebsites.net"
+}
+
+output "backend_url" {
+  
+  value = "${azurerm_linux_web_app.back-end-fnapp.name}.azurewebsites.net"
 }
