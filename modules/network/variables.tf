@@ -1,12 +1,10 @@
 
 variable "location" {
   description = "The Azure location where resources will be created."
-  default     = "East US"
 }
 
 variable "resource_group_name" {
   description = "The name of the resource group."
-  default     = "dev-rgp-cis-neubank-use-001"
 }
 
 variable "vnet_address_space" {
