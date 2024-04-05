@@ -4,7 +4,7 @@ This will deploy a frontend web server, a backend API server, Redis Cache (disab
 
 
 # Reference Architecture
-![image](https://github.com/Jim-Lentz/neubank/assets/52187407/e6b875f7-68fa-43ec-b6aa-9fc74eaa3b78)
+![image](https://github.com/Jim-Lentz/neubank/assets/52187407/51158c8a-7866-44c5-85f2-975706eaf639)
 
 # To Do
 1. Add test environment
