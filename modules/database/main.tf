@@ -17,9 +17,7 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
     Owner       = "first.last@company.com"
     Project     = "Mortgage Calculator"
   }
-  /*depends_on = [
-    azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01,azurerm_key_vault_access_policy.kv_access_policy_02,azurerm_key_vault_access_policy.kv_access_policy_03
-  ] */
+  
 }
 
 #Azure sql database

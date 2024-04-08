@@ -98,7 +98,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "be-vnet-integra
   ]
 }
 
-#vnet integration of backend functions
+#vnet integration of frontend webapp
 resource "azurerm_app_service_virtual_network_swift_connection" "fe-vnet-integration" {
   app_service_id = azurerm_linux_web_app.front-end-webapp.id
   subnet_id      = var.front-end-subnet_id

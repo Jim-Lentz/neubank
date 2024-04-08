@@ -23,53 +23,42 @@ provider "azurerm" {
   }
 }
 
-# Create resource group
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.environment}-rgp-cis-neubank-use-001"
-  location = var.location
 
-  tags = {
-    Environment = var.environment
-    Owner = "first.last@company.com"
-    Project = "Mortgage Calculator"
-  }
+module "resource_group" {
+  source              = "./modules/resourcegroup"
+  location            = var.location
+  environment         = var.environment
+  resource_group_name = module.resource_group.resource_group_name
 }
 
-data "azurerm_client_config" "current" {}
+module "keyvault" {
+  source              = "./modules/keyvault"
+  location            = var.location
+  environment         = var.environment
+  resource_group_name = module.resource_group.resource_group_name
 
-
-
-resource "azurerm_key_vault" "fg-keyvault" {
-  name                        = "${var.environment}-fgkeyvault2024"
-  location                    = azurerm_resource_group.rg.location
-  resource_group_name         = azurerm_resource_group.rg.name
-  enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
-  sku_name                    = "standard"
-
-
+  depends_on     = [
+    module.resource_group.id
+  ]
 }
-
-resource "azurerm_key_vault_access_policy" "kv_access_policy_01" {
-  #This policy adds databaseadmin group with below permissions
-  key_vault_id       = azurerm_key_vault.fg-keyvault.id
-  tenant_id          = data.azurerm_client_config.current.tenant_id
-  object_id          = data.azurerm_client_config.current.object_id
-  key_permissions    = ["Get", "List"]
-  secret_permissions = ["Get", "Backup", "Delete", "List", "Purge", "Recover", "Restore", "Set"]
-
-  depends_on = [azurerm_key_vault.fg-keyvault]
-}
-
 
 
 # for telemetry data from the applications
+module "appinsights"{
+  source = "./modules/appinsights"
+  location            = var.location
+  environment         = var.environment
+  resource_group_name = module.resource_group.resource_group_name
+  depends_on     = [
+    module.resource_group.id
+  ]
+}
+
+/*
 resource "azurerm_application_insights" "app_insights" {
   name                = "${var.environment}Calculator-appinsights"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = module.resource_group.resource_group_name
   application_type    = "web"
 
   tags = {
@@ -77,23 +66,24 @@ resource "azurerm_application_insights" "app_insights" {
     Owner = "first.last@company.com"
     Project = "Mortgage Calculator"
   }
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [ module.resource_group.id ]
 }
-
+*/
 module "networking" {
-  source         = "./modules/network"
+  source              = "./modules/network"
   location            = var.location
-  environment    = var.environment
-  resource_group_name = var.resource_group_name
+  environment         = var.environment
+  resource_group_name = module.resource_group.resource_group_name
   depends_on     = [
-    azurerm_resource_group.rg
+    #azurerm_resource_group.rg
+    module.resource_group.id
   ]
 }
 
 module "appserviceplan" {
   source              = "./modules/appserviceplan"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = module.resource_group.resource_group_name
   environment         = var.environment
   depends_on = [ module.networking ]
 }
@@ -101,16 +91,16 @@ module "appserviceplan" {
  module "compute" {
   source              = "./modules/compute"
   name                = "frontend-app-jklsrn84n3"
-  resource_group_name = azurerm_resource_group.rg.name 
+  resource_group_name = module.resource_group.resource_group_name 
   location            = var.location
   app_service_plan_id = module.appserviceplan.front-end-asp
   back-end-app_service_plan_id = module.appserviceplan.back-end-asp
   front-end-subnet_id = module.networking.front-end-subnet 
   back-end-subnet_id  = module.networking.back-end-subnet
-  insights-instrumentation_key = azurerm_application_insights.app_insights.instrumentation_key
+  insights-instrumentation_key = module.appinsights.instrumentation_key #azurerm_application_insights.app_insights.instrumentation_key
   environment         = var.environment
   depends_on = [
-    azurerm_resource_group.rg
+    module.resource_group.id
   ]
 } 
 
@@ -126,25 +116,26 @@ module "appserviceplan" {
 
 module "database" {
   source = "./modules/database"
-  resource_group_name = azurerm_resource_group.rg.name 
+  resource_group_name = module.resource_group.resource_group_name
   location            = var.location
   subnet_id           = module.networking.back-end-subnet
   environment         = var.environment
-  valult-id           = azurerm_key_vault.fg-keyvault.id
+  valult-id           = module.keyvault.fg-keyvault-id #azurerm_key_vault.fg-keyvault.id
   depends_on = [
-  azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01
+    module.keyvault.fg-keyvault,module.keyvault.kv_access_policy_01
+    #azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01
   ]
 }
 
 module "objectstorage" {
   source = "./modules/objectstorage"
-  resource_group_name = azurerm_resource_group.rg.name 
+  resource_group_name = module.resource_group.resource_group_name #azurerm_resource_group.rg.name 
   location            = var.location
   environment         = var.environment
 }
 
 output "resource_group_name" {
-  value = azurerm_resource_group.rg.name
+  value = module.resource_group.resource_group_name
 }
 
 output "frontend_url" {
