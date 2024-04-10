@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Prod Terraform Destroy
 on:
   workflow_dispatch:
     inputs:

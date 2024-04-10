@@ -3,7 +3,9 @@ resource "azurerm_storage_account" "storage_account" {
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_replication_type = "GRS"
+  public_network_access_enabled = false
+  shared_access_key_enabled = false
 
   network_rules {
     default_action             = "Deny"
@@ -16,33 +18,3 @@ resource "azurerm_storage_account" "storage_account" {
     Project = "Mortgage Calculator"
   }
 }
-/*
-resource "azurerm_private_endpoint" "frontend" {
-  name                 = "blob_private_endpoint"
-  location             = var.location
-  resource_group_name  = var.resource_group_name
-  subnet_id            = var.frontend_subnet_id
-
-  private_service_connection {
-    name                           = "blob_psc"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_storage_account.storage_account.id
-    subresource_names              = ["blob"]
-  }
-}
-*/
-/*
-resource "azurerm_private_endpoint" "backend" {
-  name                 = "blob_private_endpoint"
-  location             = var.location
-  resource_group_name  = var.resource_group_name
-  subnet_id            = var.backend_subnet_id
-
-  private_service_connection {
-    name                           = "blob_psc"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_storage_account.storage_account.id
-    subresource_names              = ["blob"]
-  }
-}
-*/

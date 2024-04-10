@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Test Terraform Destroy
 on:
   workflow_dispatch:
     inputs:
@@ -33,10 +33,10 @@ jobs:
         echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
 
     - name: 'Terraform Init'
-      run: terraform init -backend-config=key=dev-terraform.tfstate
+      run: terraform init -backend-config=key=test-terraform.tfstate
 
     - name: 'Terraform Destroy'
-      run: terraform destroy -var-file="./dev.tfvars" -auto-approve 
+      run: terraform destroy -var-file="./test.tfvars" -auto-approve 
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
