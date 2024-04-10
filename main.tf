@@ -105,14 +105,16 @@ module "appserviceplan" {
 } 
 
 # Disabled - this takes 20 minutes to come up. 
-/*
+
  module "redis" {
    source = "./modules/redis"
-   resource_group_name = azurerm_resource_group.rg.name 
+   resource_group_name = module.resource_group.resource_group_name 
    location            = var.location
-   subnet_id           = module.networking.back-end-subnet 
+   environment         = var.environment
+   subnet_id           = module.networking.redis-subnet
+   depends_on          = [ module.networking ]
  }
-*/
+
 
 module "database" {
   source = "./modules/database"
@@ -132,6 +134,8 @@ module "objectstorage" {
   resource_group_name = module.resource_group.resource_group_name #azurerm_resource_group.rg.name 
   location            = var.location
   environment         = var.environment
+  frontend_subnet_id  = module.networking.front-end-subnet
+  backend_subnet_id   =  module.networking.back-end-subnet
 }
 
 output "resource_group_name" {
@@ -139,11 +143,9 @@ output "resource_group_name" {
 }
 
 output "frontend_url" {
-  
   value = module.compute.frontend_url
 }
 
 output "backend_url" {
-  
   value = module.compute.backend_url
 }

@@ -1,10 +1,10 @@
 
-name: 'Terraform CI/CD'
+name: 'Dev Terraform CI/CD'
 
 on:
   push:
     branches:
-      - dev
+      - disabled
   pull_request:
 
 jobs:

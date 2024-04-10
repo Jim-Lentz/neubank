@@ -18,7 +18,7 @@ resource "azurerm_subnet" "front-end-subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/26"]
-  service_endpoints = ["Microsoft.Web"]
+  service_endpoints = ["Microsoft.Web", "Microsoft.Storage"]
 
   delegation {
     name = "delegation"
@@ -42,9 +42,9 @@ resource "azurerm_subnet" "back-end-subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.64/26"]
-  service_endpoints = ["Microsoft.Sql"]
+  service_endpoints = ["Microsoft.Sql", "Microsoft.Web", "Microsoft.Storage"]
 
-  delegation {
+ delegation {
     name = "delegation"
 
     service_delegation {
@@ -52,6 +52,13 @@ resource "azurerm_subnet" "back-end-subnet" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/action","Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
     }
   }
+}
+
+resource "azurerm_subnet" "redis-subnet" {
+  name                 = "redis-subnet"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.0.128/26"]
 }
 
 resource "azurerm_network_security_group" "backend_nsg" {
@@ -169,6 +176,45 @@ resource "azurerm_network_security_rule" "deny_all_inbound-frontend" {
   network_security_group_name = azurerm_network_security_group.frontend_nsg.name
 }
 
+# Restrict access to the Redis Cache
+resource "azurerm_network_security_group" "redis-nsg" {
+  name                = "redis-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  security_rule {
+    name                       = "allow-redis"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "6379"
+    source_address_prefix      = azurerm_subnet.back-end-subnet.address_prefixes[0]
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    Environment = var.environment
+    Owner       = "first.last@company.com"
+    Project     = "Mortgage Calculator"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "frontend" {
+  subnet_id                 = azurerm_subnet.front-end-subnet.id
+  network_security_group_id = azurerm_network_security_group.frontend_nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "backend" {
+  subnet_id                 = azurerm_subnet.back-end-subnet.id
+  network_security_group_id = azurerm_network_security_group.backend_nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "redis" {
+  subnet_id                 = azurerm_subnet.redis-subnet.id
+  network_security_group_id = azurerm_network_security_group.redis-nsg.id
+}
 
 output "back-end-subnet" {
   value = azurerm_subnet.back-end-subnet.id
@@ -176,4 +222,8 @@ output "back-end-subnet" {
 
 output "front-end-subnet" {
   value = azurerm_subnet.front-end-subnet.id
+}
+
+output "redis-subnet" {
+  value = azurerm_subnet.redis-subnet.id
 }

@@ -11,7 +11,7 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
   value        = random_password.randompassword.result
   key_vault_id = var.valult-id
   content_type = "text/plain"
-
+#  depends_on = [ module.keyvault ]
   tags = {
     Environment = var.environment
     Owner       = "first.last@company.com"
@@ -71,10 +71,26 @@ resource "azurerm_key_vault_secret" "sqldb_cnxn" {
   name = "fgsqldbconstring"
   value = "Driver={ODBC Driver 18 for SQL Server};Server=tcp:fg-sqldb-prod.database.windows.net,1433;Database=fg-db;Uid=4adminu$er;Pwd=${random_password.randompassword.result};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
   key_vault_id = var.valult-id
-
+#  depends_on = [ module.keyvault ]
   tags = {
     Environment = var.environment
     Owner       = "first.last@company.com"
     Project     = "Mortgage Calculator"
   }
 }
+
+/*
+resource "azurerm_private_endpoint" "sql" {
+  name                 = "sql_private_endpoint"
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  subnet_id            = var.subnet_id
+
+  private_service_connection {
+    name                           = "sql_psc"
+    is_manual_connection           = false
+    private_connection_resource_id = azurerm_mssql_database.fg-database.id
+    subresource_names              = ["sql"]
+  }
+}
+*/
