@@ -4,36 +4,24 @@ This will deploy a frontend web server, a backend API server, Redis Cache (disab
 
 
 # Reference Architecture
-![image](https://github.com/Jim-Lentz/neubank/assets/52187407/51158c8a-7866-44c5-85f2-975706eaf639)
+![image](https://github.com/Jim-Lentz/neubank/assets/52187407/995d486d-23db-4e6e-ae22-a173c29224ae)
+
 
 # To Do
-1. Add test environment
-2. Add more perimeter protection such as a WAF
-3. Add repo security scanning such as chekov or similar scanning tool
-
-# Workflow
-When adding features, create a dev branch. When pushing dev a new environment will build.
-When ready for prod merge dev to prod and Github actions will add the new features.
-
-### Create banch
-git branch dev  
-git checkout dev
-
-### Make changes and push back to dev to cause GitHub Actions to deploy
-git add .  
-git commit -m "Your commit message"  
-git push origin dev  
-
-### When ready to promote to prod run the following
-git checkout main  
-git merge dev  
-git push origin main  
+1. Add more perimeter protection such as a WAF
+2. Add repo security scanning such as chekov or similar scanning tool
 
 ## If running the scripts from the command line
 ### Dev environment
 terraform init -backend-config=key=dev-terraform.tfstate  
-terraform plan -var-file="./dev.tfvars"  
-terraform apply -var-file="./dev.tfvars"  
+terraform plan -var-file="./dev.tfvars"   
+
+## If running the scripts from the command line
+### Dev environment
+terraform init -backend-config=key=test-terraform.tfstate  
+terraform plan -var-file="./test.tfvars"  
+terraform apply -var-file="./test.tfvars"  
+
 
 ### Prod environment
 terraform init -backend-config=key=prod-terraform.tfstate  
