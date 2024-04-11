@@ -2,7 +2,7 @@
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0"
+      version = "3.97.1"
     }
   }
 
@@ -54,21 +54,7 @@ module "appinsights"{
   ]
 }
 
-/*
-resource "azurerm_application_insights" "app_insights" {
-  name                = "${var.environment}Calculator-appinsights"
-  location            = var.location
-  resource_group_name = module.resource_group.resource_group_name
-  application_type    = "web"
 
-  tags = {
-    Environment = var.environment
-    Owner = "first.last@company.com"
-    Project = "Mortgage Calculator"
-  }
-  depends_on = [ module.resource_group.id ]
-}
-*/
 module "networking" {
   source              = "./modules/network"
   location            = var.location
@@ -129,6 +115,7 @@ module "database" {
   ]
 }
 
+/* Causing an unmarshalling response error
 module "objectstorage" {
   source = "./modules/objectstorage"
   resource_group_name = module.resource_group.resource_group_name #azurerm_resource_group.rg.name 
@@ -137,7 +124,7 @@ module "objectstorage" {
   frontend_subnet_id  = module.networking.front-end-subnet
   backend_subnet_id   =  module.networking.back-end-subnet
 }
-
+*/
 output "resource_group_name" {
   value = module.resource_group.resource_group_name
 }

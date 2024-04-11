@@ -33,11 +33,18 @@ resource "azurerm_linux_web_app" "front-end-webapp" {
 #Backend
 #storage account for functionapp
 resource "azurerm_storage_account" "fn-storageaccount" {
-  name                     = "${var.environment}fgfunctionappsa2023"
+  name                     = "${var.environment}fgfunctionappsa2024"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  # public_network_access_enabled = false
+  #shared_access_key_enabled = false
+
+  #network_rules {
+  #  default_action             = "Deny"
+  #  virtual_network_subnet_ids = [var.front-end-subnet_id, var.back-end-subnet_id]
+  #}
 
   tags = {
     Environment = var.environment
