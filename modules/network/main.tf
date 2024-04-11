@@ -18,7 +18,7 @@ resource "azurerm_subnet" "front-end-subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/26"]
-  service_endpoints = ["Microsoft.Web"] #, "Microsoft.Storage"]
+  service_endpoints = ["Microsoft.Web", "Microsoft.Storage"]
 
   delegation {
     name = "delegation"
@@ -42,7 +42,7 @@ resource "azurerm_subnet" "back-end-subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.64/26"]
-  service_endpoints = ["Microsoft.Sql", "Microsoft.Web"] #, "Microsoft.Storage"]
+  service_endpoints = ["Microsoft.Sql", "Microsoft.Web", "Microsoft.Storage"]
 
  delegation {
     name = "delegation"
