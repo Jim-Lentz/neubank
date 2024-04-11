@@ -28,6 +28,7 @@ resource "azurerm_mssql_server" "azuresql" {
   version                      = "12.0"
   administrator_login          = "4adminu$er"
   administrator_login_password = random_password.randompassword.result
+  depends_on = [ azurerm_key_vault_secret.sqladminpassword ]
 
   azuread_administrator {
     login_username = "AzureAD Admin"
@@ -71,7 +72,6 @@ resource "azurerm_key_vault_secret" "sqldb_cnxn" {
   name = "fgsqldbconstring"
   value = "Driver={ODBC Driver 18 for SQL Server};Server=tcp:fg-sqldb-prod.database.windows.net,1433;Database=fg-db;Uid=4adminu$er;Pwd=${random_password.randompassword.result};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
   key_vault_id = var.valult-id
-#  depends_on = [ module.keyvault ]
   tags = {
     Environment = var.environment
     Owner       = "first.last@company.com"
@@ -79,3 +79,7 @@ resource "azurerm_key_vault_secret" "sqldb_cnxn" {
   }
 }
 
+output "database_connection_string" {
+  value = azurerm_key_vault_secret.sqldb_cnxn.value
+  
+}
