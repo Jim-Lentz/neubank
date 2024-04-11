@@ -113,16 +113,7 @@ module "database" {
   ]
 }
 
-/* Causing an unmarshalling response error moved to compute module
-module "objectstorage" {
-  source = "./modules/objectstorage"
-  resource_group_name = module.resource_group.resource_group_name #azurerm_resource_group.rg.name 
-  location            = var.location
-  environment         = var.environment
-  frontend_subnet_id  = module.networking.front-end-subnet
-  backend_subnet_id   =  module.networking.back-end-subnet
-}
-*/
+
 output "resource_group_name" {
   value = module.resource_group.resource_group_name
 }
@@ -134,3 +125,28 @@ output "frontend_url" {
 output "backend_url" {
   value = module.compute.backend_url
 }
+
+output "keyvault_id" {
+  value = module.keyvault.fg-keyvault-id
+}
+
+
+output "appserviceplan_id" {
+  value = module.appserviceplan.front-end-asp
+}
+
+output "backend_appserviceplan_id" {
+  value = module.appserviceplan.back-end-asp
+} 
+
+output "subnet_id" {
+  value = module.networking.front-end-subnet
+} 
+
+output "backend_subnet_id" {
+  value = module.networking.back-end-subnet
+}
+
+output "redis_subnet_id" {
+  value = module.networking.redis-subnet
+} 
