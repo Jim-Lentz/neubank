@@ -4,9 +4,7 @@ resource "azurerm_service_plan" "front-end-asp" {
   location            = var.location
   os_type             = "Linux"
   sku_name            = "S1"
-  #depends_on = [
-  #  module.network.azurerm_subnet.front-end-subnet.id
-  #]
+  
   tags = {
     Environment = var.environment
     Owner       = "first.last@company.com"
@@ -22,9 +20,7 @@ resource "azurerm_service_plan" "back-end-asp" {
   location            = var.location
   os_type             = "Linux"
   sku_name            = "S1"
-  #depends_on = [
-  #  module.network.azurerm_subnet.back-end-subnet.id
-  #]
+  
   tags = {
     Environment = var.environment
     Owner       = "first.last@company.com"

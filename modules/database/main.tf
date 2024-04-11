@@ -22,7 +22,7 @@ resource "azurerm_key_vault_secret" "sqladminpassword" {
 
 #Azure sql database
 resource "azurerm_mssql_server" "azuresql" {
-  name                         = "fg-sqldb-${var.environment}" 
+  name                         = "nuebank-sqldb-${var.environment}" 
   resource_group_name          = var.resource_group_name
   location                     = var.location
   version                      = "12.0"
@@ -52,7 +52,7 @@ resource "azurerm_mssql_virtual_network_rule" "allow-be" {
 }
 
 resource "azurerm_mssql_database" "fg-database" {
-  name           = "fg-db"
+  name           = "nb-db"
   server_id      = azurerm_mssql_server.azuresql.id
   collation      = "SQL_Latin1_General_CP1_CI_AS"
   max_size_gb    = 2
@@ -79,18 +79,3 @@ resource "azurerm_key_vault_secret" "sqldb_cnxn" {
   }
 }
 
-/*
-resource "azurerm_private_endpoint" "sql" {
-  name                 = "sql_private_endpoint"
-  location             = var.location
-  resource_group_name  = var.resource_group_name
-  subnet_id            = var.subnet_id
-
-  private_service_connection {
-    name                           = "sql_psc"
-    is_manual_connection           = false
-    private_connection_resource_id = azurerm_mssql_database.fg-database.id
-    subresource_names              = ["sql"]
-  }
-}
-*/

@@ -2,7 +2,7 @@
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0"
+      version = "3.97.1"
     }
   }
 
@@ -54,28 +54,13 @@ module "appinsights"{
   ]
 }
 
-/*
-resource "azurerm_application_insights" "app_insights" {
-  name                = "${var.environment}Calculator-appinsights"
-  location            = var.location
-  resource_group_name = module.resource_group.resource_group_name
-  application_type    = "web"
 
-  tags = {
-    Environment = var.environment
-    Owner = "first.last@company.com"
-    Project = "Mortgage Calculator"
-  }
-  depends_on = [ module.resource_group.id ]
-}
-*/
 module "networking" {
   source              = "./modules/network"
   location            = var.location
   environment         = var.environment
   resource_group_name = module.resource_group.resource_group_name
   depends_on     = [
-    #azurerm_resource_group.rg
     module.resource_group.id
   ]
 }
@@ -97,7 +82,7 @@ module "appserviceplan" {
   back-end-app_service_plan_id = module.appserviceplan.back-end-asp
   front-end-subnet_id = module.networking.front-end-subnet 
   back-end-subnet_id  = module.networking.back-end-subnet
-  insights-instrumentation_key = module.appinsights.instrumentation_key #azurerm_application_insights.app_insights.instrumentation_key
+  insights-instrumentation_key = module.appinsights.instrumentation_key 
   environment         = var.environment
   depends_on = [
     module.resource_group.id
@@ -105,7 +90,7 @@ module "appserviceplan" {
 } 
 
 # Disabled - this takes 20 minutes to come up. 
-
+/*
  module "redis" {
    source = "./modules/redis"
    resource_group_name = module.resource_group.resource_group_name 
@@ -114,7 +99,7 @@ module "appserviceplan" {
    subnet_id           = module.networking.redis-subnet
    depends_on          = [ module.networking ]
  }
-
+*/
 
 module "database" {
   source = "./modules/database"
@@ -122,13 +107,13 @@ module "database" {
   location            = var.location
   subnet_id           = module.networking.back-end-subnet
   environment         = var.environment
-  valult-id           = module.keyvault.fg-keyvault-id #azurerm_key_vault.fg-keyvault.id
+  valult-id           = module.keyvault.fg-keyvault-id
   depends_on = [
     module.keyvault.fg-keyvault,module.keyvault.kv_access_policy_01
-    #azurerm_key_vault.fg-keyvault,azurerm_key_vault_access_policy.kv_access_policy_01
   ]
 }
 
+/* Causing an unmarshalling response error moved to compute module
 module "objectstorage" {
   source = "./modules/objectstorage"
   resource_group_name = module.resource_group.resource_group_name #azurerm_resource_group.rg.name 
@@ -137,7 +122,7 @@ module "objectstorage" {
   frontend_subnet_id  = module.networking.front-end-subnet
   backend_subnet_id   =  module.networking.back-end-subnet
 }
-
+*/
 output "resource_group_name" {
   value = module.resource_group.resource_group_name
 }
